@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/TAP-Formatter-GitHubActions.t
+lib/TAP/Formatter/GitHubActions.pm
