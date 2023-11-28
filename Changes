@@ -1,5 +1,11 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
+0.2.2  Fri Nov 28 23:08:15 2023
+	- Added usage instructions to the pod.
+
+0.2.1  Fri Nov 28 23:08:15 2023
+	- Fixed the versioning a bit. It should be SemVer now.
+
 0.01  Fri Nov 24 21:31:57 2023
 	- original version; created by h2xs 1.23 with options
 		-AX --skip-exporter --use-new-tests -n TAP::Formatter::GitHubActions

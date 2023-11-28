@@ -35,3 +35,4 @@ inc/
 /*.zip
 
 .tidyall.d/
+pod2htmd.tmp

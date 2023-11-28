@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.2.2';
 
 
 # My file, my terms.
@@ -134,7 +134,23 @@ C<TAP::Formatter::GitHubActions> - TAP Formatter for GitHub Actions
 
 On the command line, with I<prove>:
 
-  $ prove --formatter TAP::Formatter::GitHubActions ...
+  $ prove --merge --formatter TAP::Formatter::GitHubActions ...
+
+You can also use a C<.proverc> file with
+  
+  # .proverc contents
+  --lib
+  --merge
+  --formatter TAP::Formatter::GitHubActions
+
+And then invoke I<prove> without flags:
+
+  $ prove
+
+=head2 IMPORTANT NOTE
+
+This formatter B<needs> the C<--merge> flag, else it won't be able to process
+the comments to produce GitHub-Actions-compatible output.
 
 =head1 DESCRIPTION
 
