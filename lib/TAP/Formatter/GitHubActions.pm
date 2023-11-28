@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.1.1';
+our $VERSION = '0.2.0';
 
 
 # My file, my terms.
