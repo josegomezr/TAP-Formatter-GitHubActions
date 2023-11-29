@@ -5,7 +5,7 @@ use warnings;
 use v5.16;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.2.6_1';
+our $VERSION = '0.2.6_DEVEL2';
 
 # My file, my terms.
 my $TRIPHASIC_REGEX = qr/
@@ -25,12 +25,6 @@ my $TRIPHASIC_REGEX = qr/
 
 sub open_test {
   my ($self, $test, $parser) = @_;
-  # my $session = TAP::Formatter::GitHubActions::Session->new( {
-  #     name            => $test,
-  #     formatter       => $self,
-  #     parser          => $parser,
-  #     # passing_todo_ok => $ENV{ALLOW_PASSING_TODOS} ? 1 : 0,
-  # } );
   my $session = $self->SUPER::open_test($test, $parser);
 
   # We'll use the parser as a vessel, afaics there's one parser instance per
@@ -63,8 +57,7 @@ sub open_test {
   return $session;
 }
 
-sub header {
-}
+sub header { }
 
 sub summary {
   my ($self, $aggregate, $interrupted) = @_;

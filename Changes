@@ -1,5 +1,8 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
+0.2.6  Wed 29. Nov 19:38:51 2023
+	- Cleanup unused code TAP::Formatter::GitHubActions::Session.
+
 0.2.5  Wed 29. Nov 18:23:33 2023
 	- Avoid capturing `# Subtest` lines into the context.
 

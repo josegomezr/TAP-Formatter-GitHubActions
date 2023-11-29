@@ -1,5 +1,5 @@
-TAP-Formatter-GitHubActions version 0.01
-========================================
+TAP-Formatter-GitHubActions
+===========================
 
 Provide a Formatter for TAP::Harness that outputs Error messages for
 [GitHub Actions (GHA)][0].
@@ -10,19 +10,23 @@ GHA annotations.
 
 It converts TAP output like:
 ```
-#   Failed test 'failure name 2'
-#   at t/02-singleton.t line 16.
-#          got: '3'
-#     expected: '4'
+t/02-singleton.t .. 
+# Subtest: Save
+    not ok 1 - Init state
+
+    #   Failed test 'Init state'
+    #   at t/02-singleton.t line 14.
+    # died: 1 at t/02-singleton.t line 14.
 ```
 
 To:
 
 ```
-# ::error file=t/fixtures/tests/all-mixed,line=16,title=Failed Tests::- failure name 2%0A--- CAPTURED CONTEXT ---%0A    #          got: '3'%0A    #     expected: '4'%0A---  END OF CONTEXT  ---
+::error file=t/02-singleton.t,line=14,title=Failed Tests::- Init state%0A--- CAPTURED CONTEXT ---%0A    # died: 1 at t/02-singleton.t line 14.%0A---  END OF CONTEXT  ---
+::error file=t/02-singleton.t,line=25,title=Failed Tests::- Save
 ```
 
-And those annotations render in PR's like so: (not a 1:1 example yet.)
+And those annotations render in PR's like so:
 ![github error annotation](./images/github-error-annotation.png)
 
 INSTALLATION
