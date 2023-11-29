@@ -7,13 +7,26 @@ use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
-    NAME              => 'TAP::Formatter::GitHubActions',
-    VERSION_FROM      => 'lib/TAP/Formatter/GitHubActions.pm',
-    PREREQ_PM         => {
-        'TAP::Harness' => 3.12,
+  NAME => 'TAP::Formatter::GitHubActions',
+  VERSION_FROM => 'lib/TAP/Formatter/GitHubActions.pm',
+  PREREQ_PM => {
+    'TAP::Harness' => 3.12
+  },
+  TEST_REQUIRES => {
+    'Test::More' => '0',
+  },
+  ABSTRACT_FROM => 'lib/TAP/Formatter/GitHubActions.pm',
+  MIN_PERL_VERSION => '5.016000',
+  META_MERGE => {
+    "meta-spec" => {version => 2},
+    resources => {
+      repository => {
+        type => 'git',
+        url => 'https://github.com/josegomezr/TAP-Formatter-GitHubActions.git',
+        web => 'https://github.com/josegomezr/TAP-Formatter-GitHubActions',
+      },
     },
-    AUTHOR            => 'Jose D. Gomez R. <1josegomezr@gmail.com>',
-    #LICENSE           => 'perl',
-    #Value must be from legacy list of licenses here
-    #https://metacpan.org/pod/Module::Build::API
+  },
+  AUTHOR => 'Jose D. Gomez R. <1josegomezr@gmail.com>',
+  LICENSE => 'perl',
 );

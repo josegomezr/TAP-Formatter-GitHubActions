@@ -1,5 +1,10 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
+0.2.4  Mi 29. Nov 17:43:05 2023
+	- Remove IO::Scalar dependency.
+	- Add GitHub Workflow & perltidy rules.
+	- Feeding more info in Makefile.PL
+
 0.2.3  Wed Nov 29 08:17:36 2023
 	- Align perl versions through the module. Using 5.016 everywhere.
 

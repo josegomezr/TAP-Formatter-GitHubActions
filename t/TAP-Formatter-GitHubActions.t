@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use v5.16;
 use Test::More;
 use IO::Scalar;
 use TAP::Harness;
@@ -25,7 +26,8 @@ foreach my $test (@tests) {
   (my $output = $test) =~ s{(/fixtures)/tests/}{$1/output/};
 
   my $received = '';
-  my $fh = IO::Scalar->new(\$received);
+  open(my $fh, '>', \$received);
+
   eval {
     my $harness = TAP::Harness->new({
         stdout => $fh,

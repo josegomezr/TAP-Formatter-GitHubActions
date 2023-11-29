@@ -1,0 +1,37 @@
+---
+name: 'Perl'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  perl-lint-checks:
+    runs-on: ubuntu-latest
+    name: "Perltidy"
+    container:
+      image: perldocker/perl-tester
+    steps:
+      - uses: actions/checkout@v4
+      - run: GITHUB_ACTIONS=1 tidyall --check-only --all --quiet
+  
+  perl-critic-checks:
+    runs-on: ubuntu-latest
+    name: "Perlcritic"
+    container:
+      image: perldocker/perl-tester
+    steps:
+      - uses: actions/checkout@v4
+      - run: perlcritic --quiet .
+
+# Not using my own dog-food here, quite ironic right?
+  perl-prove:
+    runs-on: ubuntu-latest
+    name: "Prove"
+    container:
+      image: perldocker/perl-tester:5.26
+    steps:
+      - uses: actions/checkout@v4
+      - run: prove .

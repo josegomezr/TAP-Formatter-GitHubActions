@@ -1,12 +1,11 @@
 package TAP::Formatter::GitHubActions;
 
-use 5.016;
 use strict;
 use warnings;
+use v5.16;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.2.3';
-
+our $VERSION = '0.2.4';
 
 # My file, my terms.
 my $TRIPHASIC_REGEX = qr/
@@ -128,7 +127,7 @@ __END__
 
 =head1 NAME
 
-C<TAP::Formatter::GitHubActions> - TAP Formatter for GitHub Actions
+TAP::Formatter::GitHubActions - TAP Formatter for GitHub Actions
 
 =head1 SYNOPSIS
 
