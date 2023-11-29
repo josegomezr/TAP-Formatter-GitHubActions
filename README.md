@@ -31,13 +31,37 @@ And those annotations render in PR's like so:
 
 INSTALLATION
 ------------
-To install this module type the following:
+To install this module the good ol' way, type the following:
 
 ```bash
 perl Makefile.PL
 make
 make test
 make install
+```
+
+With `cpanm`, add a feature:
+
+```perl
+# cpanfile
+
+feature 'ci' => sub {
+  requires 'TAP::Formatter::GitHubActions';
+};
+```
+
+and then install it:
+
+```bash
+# assuming you're in the same dir where the cpanfile resides.
+cpanm --installdeps . --with-feature=ci
+```
+
+USAGE
+-----
+
+```bash
+prove --merge --formatter TAP::Formatter::GitHubActions
 ```
 
 DEPENDENCIES
