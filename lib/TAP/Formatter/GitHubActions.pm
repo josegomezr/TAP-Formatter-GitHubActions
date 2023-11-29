@@ -5,7 +5,7 @@ use warnings;
 use v5.16;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.2.4';
+our $VERSION = '0.2.5';
 
 # My file, my terms.
 my $TRIPHASIC_REGEX = qr/
@@ -48,6 +48,8 @@ sub open_test {
     # on every "failed test", start a new buffer.
     push(@{$parser->{_fail_msgs}}, '') if $result->raw =~ /Failed test/;
 
+    # Don't save "# Subtest" headers
+    return if $result->raw =~ /# Subtest/;
     # Don't save the last message, it's useless.
     return if $result->raw =~ /Looks like/;
     return unless $result->raw =~ /^\s*#/;
