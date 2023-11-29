@@ -1,5 +1,8 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
+0.2.3  Wed Nov 29 08:17:36 2023
+	- Align perl versions through the module. Using 5.016 everywhere.
+
 0.2.2  Fri Nov 28 23:08:15 2023
 	- Added usage instructions to the pod.
 
@@ -9,4 +12,3 @@ Revision history for Perl extension TAP::Formatter::GitHubActions.
 0.01  Fri Nov 24 21:31:57 2023
 	- original version; created by h2xs 1.23 with options
 		-AX --skip-exporter --use-new-tests -n TAP::Formatter::GitHubActions
-

@@ -1,11 +1,11 @@
 package TAP::Formatter::GitHubActions;
 
-use 5.038000;
+use 5.016;
 use strict;
 use warnings;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.2.2';
+our $VERSION = '0.2.3';
 
 
 # My file, my terms.
