@@ -5,7 +5,7 @@ use warnings;
 use v5.16;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.2.5';
+our $VERSION = '0.2.6_1';
 
 # My file, my terms.
 my $TRIPHASIC_REGEX = qr/
