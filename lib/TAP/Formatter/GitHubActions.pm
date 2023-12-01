@@ -85,6 +85,9 @@ sub _process_captured_yaml_comments {
     my $line = $yaml->{at}->{line};
 
     my $msg = $yaml->{message};
+    $msg =~ s/\n.+//gm if $msg =~ /^Failed test /;
+    chomp($msg);
+
     $parser->{_failures_per_line}->{$line} //= ();
     push @{$parser->{_failures_per_line}->{$line}}, $msg;
   }
