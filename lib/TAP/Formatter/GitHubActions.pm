@@ -153,12 +153,15 @@ sub summary {
     my $failures_per_line = $parser->{_failures_per_line};
 
     # Second pass: Print the aggregations
+    # TODO: this really needs some love, is a nightmare of cleaning up emptyspaces
     for my $line (sort keys %$failures_per_line) {
       my ($title, $message) = split(/\n/, join("\n\n", @{$failures_per_line->{$line}}), 2);
       next unless $title =~ /^Failed test/;
-      $title =~ s/\n/%0A/g;
+
       $message //= "";
+      $message =~ s/^\n//;
       $message = "::--- CAPTURED CONTEXT ---\n$message\n---  END OF CONTEXT  ---" if $message;
+
       $message =~ s/\n/%0A/g;
 
       my $log_line = sprintf(
