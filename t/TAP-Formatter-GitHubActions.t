@@ -22,6 +22,16 @@ my @tests = grep { -f $_ } <t/fixtures/tests/*>;
 plan tests => 1 + scalar(@tests);
 use_ok('TAP::Formatter::GitHubActions');
 
+sub snip_until_report {
+  my $output = shift;
+
+  $output =~ s/^(.*)\n//
+    while $output
+    && !($output =~ m/^(?:= GitHub Actions Report =\n)/);
+  chomp($output);
+  return $output;
+}
+
 foreach my $test (@tests) {
   (my $output = $test) =~ s{(/fixtures)/tests/}{$1/output/};
 
@@ -39,10 +49,9 @@ foreach my $test (@tests) {
     $harness->runtests($test);
   };
 
-  $expected = (split/= GitHub Actions Report =\n/, $expected, 2)[1] // '';
-  $received = (split/= GitHub Actions Report =\n/, $received, 2)[1] // '';
-  chomp($expected);
-  chomp($received);
+  $expected = snip_until_report($expected);
+  $received = snip_until_report($received);
+
   my $fail;
   is($received, $expected, $test) or ($fail = 1);
   

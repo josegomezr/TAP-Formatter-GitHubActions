@@ -4,17 +4,15 @@ use strict;
 use warnings;
 use v5.16;
 use base 'TAP::Formatter::File';
-# use TAP::Parser::YAMLish::Reader;
-
 our $VERSION = '0.3.0_1';
 
 # My file, my terms.
 my $TRIPHASIC_REGEX = qr/
 \s*
-  (?<test_name>
-    Failed\stest                  # Beginning Needle
-    (?:\s*'[^']+')?    # Test Name [usually last param in assertion]
-  )                            # -- Optional
+  (?<test_name>                   # Test header
+    Failed\stest                  
+    (?:\s*'[^']+')?               # Test name [usually last param in an assertion, optional]
+  )
   \s*
   at\s(?<filename>.+)           # Location: File
   \s*
@@ -123,13 +121,14 @@ sub _process_captured_tap_comments {
 # this needs a re-design the moment I understand better all parts involved...
 sub summary {
   my ($self, $aggregate, $interrupted) = @_;
-  # $self->SUPER::summary($aggregate, $interrupted);
-  $self->_output("\n= GitHub Actions Report =\n");
+  $self->SUPER::summary($aggregate, $interrupted);
 
   my $total = $aggregate->total;
   my $passed = $aggregate->passed;
 
   return if ($total == $passed && !$aggregate->has_problems);
+
+  $self->_output("\n= GitHub Actions Report =\n");
 
   for my $test ($aggregate->descriptions) {
     my ($parser) = $aggregate->parsers($test);

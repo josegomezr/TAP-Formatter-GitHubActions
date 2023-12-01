@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: perlcritic --quiet .
 
-# Not using my own dog-food here, quite ironic right?
+  # Not using my own dog-food here, quite ironic right?
   perl-prove:
     runs-on: ubuntu-latest
     name: "Prove"
