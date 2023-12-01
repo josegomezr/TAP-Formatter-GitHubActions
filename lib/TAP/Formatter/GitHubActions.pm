@@ -25,6 +25,9 @@ sub open_test {
   my ($self, $test, $parser) = @_;
   my $session = $self->SUPER::open_test($test, $parser);
 
+  # force verbosity to be able to read comments, yamls & unknowns.
+  $self->verbosity(1);
+
   # We'll use the parser as a vessel, afaics there's one parser instance per
   # parallel job.
 
