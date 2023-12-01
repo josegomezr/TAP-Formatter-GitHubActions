@@ -1,5 +1,14 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
+0.3.0_2  Fri 01 Dec 2023 14:49:58
+	- Cleaned-up output for the happy-path (no output on all ok).
+
+0.3.0_1  Thu Nov 30 20:48:05 2023
+	- Rewrite a couple of bits & regexes to add support for YAML output provided
+	  by `Test2::Formatter::YAMLEnhancedTAP`.
+
+	  Context lines should be tidier now since there's a somewhat "generalized" way of storing the parsed output.
+
 0.2.6  Wed 29. Nov 19:38:51 2023
 	- Cleanup unused code TAP::Formatter::GitHubActions::Session.
 

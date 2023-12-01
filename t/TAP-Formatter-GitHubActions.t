@@ -22,13 +22,18 @@ my @tests = grep { -f $_ } <t/fixtures/tests/*>;
 plan tests => 1 + scalar(@tests);
 use_ok('TAP::Formatter::GitHubActions');
 
+# Drop all the output until the "= GitHub Actions Report =" header
+# if not found return empty string.
 sub snip_until_report {
   my $output = shift;
 
-  $output =~ s/^(.*)\n//
-    while $output
-    && !($output =~ m/^(?:= GitHub Actions Report =\n)/);
-  chomp($output);
+  # Strip until report
+  $output = "" unless ($output =~ s/.*^= GitHub Actions Report =//ms);
+  # trim leading
+  $output =~ s/^\s*//;
+  # trim trailing
+  $output =~ s/\s*$//;
+  # return
   return $output;
 }
 
@@ -43,7 +48,7 @@ foreach my $test (@tests) {
   eval {
     my $harness = TAP::Harness->new({
         stdout => $fh,
-        # merge => 1,
+        merge => 1,
         formatter_class => 'TAP::Formatter::GitHubActions',
     });
     $harness->runtests($test);
@@ -54,11 +59,17 @@ foreach my $test (@tests) {
 
   my $fail;
   is($received, $expected, $test) or ($fail = 1);
-  
-  if ($fail) {
-    print "\n== $output ==\n";
-    print $received;
-    print "\n====\n";
-  } ;
-  
+
+  # tap output is quite hard to parse for me...
+  # I'll just pretty print it here.
+  if ($ENV{TEST_SHOW_FULL_DIFF} && $fail) {
+    print STDERR "\n== Expected $output ==\n";
+    print STDERR $expected;
+    print STDERR "\n====\n";
+
+    print STDERR "\n== Received $output ==\n";
+    print STDERR $received;
+    print STDERR "\n====\n";
+  }
+
 }
