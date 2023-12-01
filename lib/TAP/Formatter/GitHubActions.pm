@@ -4,132 +4,108 @@ use strict;
 use warnings;
 use v5.16;
 use base 'TAP::Formatter::File';
-use TAP::Parser::YAMLish::Reader;
-use YAML::PP qw(Load);
+# use TAP::Parser::YAMLish::Reader;
 
-my $yr = TAP::Parser::YAMLish::Reader->new;
-our $VERSION = '0.2.6_DEVEL2';
+our $VERSION = '0.3.0_1';
 
 # My file, my terms.
 my $TRIPHASIC_REGEX = qr/
-  \s*
-  Failed\stest                  # Beginning Needle
-  (                             # 
-    \s*'(?<test_name>[^']+)'    # Test Name [usually last param in assertion]
-    \n\s*\#\s*                  # eat-up all the remainder
-  )?                            # -- Optional
+\s*
+  (?<test_name>
+    Failed\stest                  # Beginning Needle
+    (?:\s*'[^']+')?    # Test Name [usually last param in assertion]
+  )                            # -- Optional
   \s*
   at\s(?<filename>.+)           # Location: File
   \s*
-  line\s(?<line>\d+)            # Location: Line
-  \.\n
+  line\s(?<line>\d+)\.          # Location: Line
+  (\n)?
   (?<context_msg>[\w\W]*)       # Any additional content
-/x;
-
-sub _should_inspect_yaml {
-  return ($ENV{T2_FORMATTER} // '') =~ m/YAMLEnhancedTAP$/;
-}
+/mx;
 
 sub open_test {
   my ($self, $test, $parser) = @_;
   my $session = $self->SUPER::open_test($test, $parser);
 
-  $self->{mode} = $self->_should_inspect_yaml() ? 'yaml' : 'comments';
-
   # We'll use the parser as a vessel, afaics there's one parser instance per
   # parallel job.
 
   # We'll keep track of all output of a test with this.
-  $parser->{_tap_comments} = [''];
+  $parser->{_tap_comments} = [];
   $parser->{_tap_yaml} = [];
 
   # In an ideal world, we'd just need to listen to `comment` and that should
   # suffice, but `throws_ok` & `lives_ok` report via `unknown`...
   # But this is real life...
-  my $handler = sub {
+  # so...
+  my $handler =  sub {
     my $result = shift;
-    # on every "failed test", start a new buffer.
-    push(@{$parser->{_tap_comments}}, '') if $result->raw =~ /Failed test/;
+    $result = $result->raw;
+    # Skip all messages that are not comments
+    return unless $result =~ /^\s*#/;
 
-    # Don't save "# Subtest" headers
-    return if $result->raw =~ /# Subtest/;
-    # Don't save the last message, it's useless.
-    return if $result->raw =~ /Looks like/;
-    return unless $result->raw =~ /^\s*#/;
-    # save the message.
-    $parser->{_tap_comments}[-1] .= $result->raw . "\n";
+    # cleanup the message
+    $result =~ s/\s*#\s*//;
+    # Skip Subtests
+    return if $result =~ /^Subtest/;
+    # Skip Subtests
+    return if $result =~ m/^Looks like/;
+
+    # Push a new buffer on every failed test
+    push(@{$parser->{_tap_comments}}, '') if $result =~ /^Failed test/;
+    # Just in case something is printed before reachign a "Failed test", add a buffer
+    push(@{$parser->{_tap_comments}}, "Failed test\n") unless defined $parser->{_tap_comments}[-1];
+
+    $parser->{_tap_comments}[-1] .= $result . "\n";
   };
 
-  if (!$self->_should_inspect_yaml()) {
-    # Legacy parsing
-    $parser->callback(comment => $handler);
-    $parser->callback(unknown => $handler);
-    return $session;
-  }
+  $parser->callback(unknown => $handler);
+  $parser->callback(comment => $handler);
 
   # Enable YAML Support
   $parser->version(13);
-  # Use YAML annotations instead.
   $parser->callback(yaml => sub {
-    my $result = shift->raw();
-    # de-indent documents
-    $result =~ /^\s*/;
-    my $pattern = ' ' x $+[0];
-    $result =~ s/^$pattern//gm;
-
-    push @{$parser->{_tap_yaml}}, $result;
+    push @{$parser->{_tap_yaml}}, $_[0]->data;
   });
 
   return $session;
 }
 
-sub header {}
+sub header { }
 
 sub _process_captured_yaml_comments {
   my ($self, $parser, $test) = @_;
 
-  my $failures_per_line = {};
-  for my $yaml_doc (@{$parser->{_tap_yaml}}) {
-    my $yaml = Load($yaml_doc);
+  $parser->{_failures_per_line} //= {};
+  foreach my $yaml (@{$parser->{_tap_yaml}}) {
     my $line = $yaml->{at}->{line};
 
-    $failures_per_line->{$line} //= ();
-
     my $msg = $yaml->{message};
-
-    # if it begins with failed test, let's put a mark on it
-    if($msg =~ m/^Failed test/){
-      $msg =~ s/\n//gm;
-      $msg = "- $msg";
-    }else{
-      # else indent it
-      $msg =~ s/^/  /gm unless $yaml->{message} =~ m/^Failed test/;
-    }
-
-    push @{$failures_per_line->{$line}}, $msg;
+    $parser->{_failures_per_line}->{$line} //= ();
+    push @{$parser->{_failures_per_line}->{$line}}, $msg;
   }
-
-  return $failures_per_line;
 }
 
 sub _process_captured_tap_comments {
   my ($self, $parser, $test) = @_;
 
-  my $failures_per_line = {};
+  $parser->{_failures_per_line} //= {};
 
-  for my $line (@{$parser->{_tap_comments}}) {
+  foreach my $line (@{$parser->{_tap_comments}}) {
+    chomp($line);
     # Skip anything that doesn't look like our TRIPHASIC REGEX
+
     next unless $line =~ qr/$TRIPHASIC_REGEX/m;
     # Extract all variables
     my ($line, $fail_message, $context_msg) = ($+{line}, $+{test_name} // 'fail test', $+{context_msg});
-    $failures_per_line->{$line} //= ();
+    $parser->{_failures_per_line}->{$line} //= ();
 
     # Eat up any trailing whitespace
     chomp($context_msg);
     # Remove indentation before the #
     $context_msg =~ s/^\s*//gm;
 
-    $fail_message = "- $fail_message";
+    $fail_message = "$fail_message";
     if ($context_msg) {
       # Indent
       $context_msg =~ s/^/    /gm;
@@ -138,16 +114,17 @@ sub _process_captured_tap_comments {
       $fail_message .= "\n$context_msg";
     }
 
-    push(@{$failures_per_line->{$line}}, $fail_message);
+    push(@{$parser->{_failures_per_line}->{$line}}, $fail_message);
   }
 
-  return $failures_per_line;
+  return $parser->{_failures_per_line};
 }
 
 # this needs a re-design the moment I understand better all parts involved...
 sub summary {
   my ($self, $aggregate, $interrupted) = @_;
-  $self->SUPER::summary($aggregate, $interrupted);
+  # $self->SUPER::summary($aggregate, $interrupted);
+  $self->_output("\n= GitHub Actions Report =\n");
 
   my $total = $aggregate->total;
   my $passed = $aggregate->passed;
@@ -159,31 +136,26 @@ sub summary {
 
     next if $parser->passed == $parser->tests_run && !$parser->exit;
 
-    my $failures_per_line;
-
     # First pass, aggregate errors in the same line into a single error.
     # This is mostly cosmetic not to spam the UI that hard.
-    if ($self->{mode} eq 'yaml') {
-      $failures_per_line = $self->_process_captured_yaml_comments($parser, $test);
-    }elsif ($self->{mode} eq 'comments') {
-      $failures_per_line = $self->_process_captured_tap_comments($parser, $test);
-    }else{
-      die 'Unknown mode of operation';
-    }
+    $self->_process_captured_tap_comments($parser, $test);
+    # YAML overwrites TAP Comments.
+    $self->_process_captured_yaml_comments($parser, $test);
+
+    my $failures_per_line = $parser->{_failures_per_line};
 
     # Second pass: Print the aggregations
     for my $line (sort keys %$failures_per_line) {
-      my $message = join("%0A%0A", @{$failures_per_line->{$line}});
-      $message = "--- CAPTURED CONTEXT ---\n$message\n---  END OF CONTEXT  ---";
-      
-
-      next if $self->{mode} eq 'yaml' && !($message =~ m/Failed test/);
-
+      my ($title, $message) = split(/\n/, join("\n\n", @{$failures_per_line->{$line}}), 2);
+      next unless $title =~ /^Failed test/;
+      $title =~ s/\n/%0A/g;
+      $message //= "";
+      $message = "::--- CAPTURED CONTEXT ---\n$message\n---  END OF CONTEXT  ---" if $message;
       $message =~ s/\n/%0A/g;
 
       my $log_line = sprintf(
-        "::error file=%s,line=%s,title=Failed Tests::%s",
-        $test, $line, $message
+        "::error file=%s,line=%s,title=%s%s",
+        $test, $line, $title, $message
       );
 
       $self->_output("$log_line\n");

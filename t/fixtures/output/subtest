@@ -1,8 +1,6 @@
-t/fixtures/tests/subtest .. 
-Dubious, test returned 1 (wstat 256, 0x100)
-Failed 1/2 subtests 
-::error file=t/fixtures/tests/subtest,line=19,title=Failed Tests::- fail test%0A--- CAPTURED CONTEXT ---%0A    # died: lol at subtest at t/02-singleton.t line 19.%0A---  END OF CONTEXT  ---
-::error file=t/fixtures/tests/subtest,line=20,title=Failed Tests::- failure name%0A--- CAPTURED CONTEXT ---%0A    # died: lol at subtest with name at t/02-singleton.t line 20.%0A---  END OF CONTEXT  ---
-::error file=t/fixtures/tests/subtest,line=21,title=Failed Tests::- fail test%0A--- CAPTURED CONTEXT ---%0A    #          got: '1'%0A    #     expected: '2'%0A---  END OF CONTEXT  ---
-::error file=t/fixtures/tests/subtest,line=22,title=Failed Tests::- failure name 2%0A--- CAPTURED CONTEXT ---%0A    #          got: '3'%0A    #     expected: '4'%0A---  END OF CONTEXT  ---
-::error file=t/fixtures/tests/subtest,line=23,title=Failed Tests::- a subtest
+= GitHub Actions Report =
+::error file=t/fixtures/tests/subtest,line=19,title=Failed test::--- CAPTURED CONTEXT ---%0A    died: lol at subtest at t/02-singleton.t line 19.%0A---  END OF CONTEXT  ---
+::error file=t/fixtures/tests/subtest,line=20,title=Failed test 'failure name'::--- CAPTURED CONTEXT ---%0A    died: lol at subtest with name at t/02-singleton.t line 20.%0A---  END OF CONTEXT  ---
+::error file=t/fixtures/tests/subtest,line=21,title=Failed test::--- CAPTURED CONTEXT ---%0A    got: '1'%0A    expected: '2'%0A---  END OF CONTEXT  ---
+::error file=t/fixtures/tests/subtest,line=22,title=Failed test 'failure name 2'::--- CAPTURED CONTEXT ---%0A    got: '3'%0A    expected: '4'%0A---  END OF CONTEXT  ---
+::error file=t/fixtures/tests/subtest,line=23,title=Failed test 'a subtest'

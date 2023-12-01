@@ -25,19 +25,31 @@ use_ok('TAP::Formatter::GitHubActions');
 foreach my $test (@tests) {
   (my $output = $test) =~ s{(/fixtures)/tests/}{$1/output/};
 
+  my $expected = slurp($output);
+
   my $received = '';
   open(my $fh, '>', \$received);
 
   eval {
     my $harness = TAP::Harness->new({
         stdout => $fh,
-        merge => 1,
+        # merge => 1,
         formatter_class => 'TAP::Formatter::GitHubActions',
     });
     $harness->runtests($test);
   };
 
-  my $expected = slurp($output);
-
-  is($received, $expected, $test) or diag("GOT: ", explain($received));
+  $expected = (split/= GitHub Actions Report =\n/, $expected, 2)[1] // '';
+  $received = (split/= GitHub Actions Report =\n/, $received, 2)[1] // '';
+  chomp($expected);
+  chomp($received);
+  my $fail;
+  is($received, $expected, $test) or ($fail = 1);
+  
+  if ($fail) {
+    print "\n== $output ==\n";
+    print $received;
+    print "\n====\n";
+  } ;
+  
 }
