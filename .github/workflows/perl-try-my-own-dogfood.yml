@@ -15,7 +15,7 @@ jobs:
       image: perldocker/perl-tester:5.26
     steps:
       - uses: actions/checkout@v4
-      - run: cpanm --instaldeps . --with-test
+      - run: cpanm --installdeps . --with-feature ci
       - run: PERL5LIB=$PWD/lib:$PERL5LIB prove --formatter TAP::Formatter::GitHubActions --merge
 
   perl-prove-with-tap-yaml:
@@ -25,5 +25,5 @@ jobs:
       image: perldocker/perl-tester:5.26
     steps:
       - uses: actions/checkout@v4
-      - run: cpanm --instaldeps . --with-test
+      - run: cpanm --installdeps . --with-feature ci
       - run: PERL5LIB=$PWD/lib:$PERL5LIB T2_FORMATTER=YAMLEnhancedTAP prove --formatter TAP::Formatter::GitHubActions --merge

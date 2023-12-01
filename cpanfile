@@ -2,9 +2,12 @@
 requires 'Storable', '>= 3.06';
 
 on 'test' => sub {
-    requires 'Test2::Formatter::YAMLEnhancedTAP', '>= 0.0.3';
     requires 'Test::Most';
     requires 'Test::Warnings';
+};
+
+feature 'ci' => sub {
+    requires 'Test2::Formatter::YAMLEnhancedTAP', '>= 0.0.3';
 };
 
 on 'develop' => sub {
