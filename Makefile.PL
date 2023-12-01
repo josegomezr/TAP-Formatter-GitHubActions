@@ -10,7 +10,8 @@ WriteMakefile(
   NAME => 'TAP::Formatter::GitHubActions',
   VERSION_FROM => 'lib/TAP/Formatter/GitHubActions.pm',
   PREREQ_PM => {
-    'TAP::Harness' => 3.12
+    'TAP::Harness' => 3.12,
+    'Test2::Formatter::YAMLEnhancedTAP' => '0.0.3',
   },
   TEST_REQUIRES => {
     'Test::More' => '0',

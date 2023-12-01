@@ -1,5 +1,5 @@
-TAP-Formatter-GitHubActions
-===========================
+TAP::Formatter::GitHubActions
+=============================
 
 Provide a Formatter for TAP::Harness that outputs Error messages for
 [GitHub Actions (GHA)][0].
@@ -64,11 +64,21 @@ USAGE
 prove --merge --formatter TAP::Formatter::GitHubActions
 ```
 
+For more accurate messages:
+
+```bash
+T2_FORMATTER=YAMLEnhancedTAP prove --merge --formatter TAP::Formatter::GitHubActions
+```
+
+`Test2::Formatter::YAMLEnhancedTAP` is pulled automatically with this module,
+although it's not required for it to work.
+
 DEPENDENCIES
 ------------
 This module requires these other modules and libraries:
 
   - `TAP::Harness`
+  - `Test2::Formatter::YAMLEnhancedTAP` (optional runtime dep)
 
 COPYRIGHT AND LICENCE
 ---------------------

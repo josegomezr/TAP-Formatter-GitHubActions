@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use v5.16;
 use Test::More;
-use IO::Scalar;
 use TAP::Harness;
 
 # everything down here is *VERY* influenced by:
@@ -71,5 +70,4 @@ foreach my $test (@tests) {
     print STDERR $received;
     print STDERR "\n====\n";
   }
-
 }

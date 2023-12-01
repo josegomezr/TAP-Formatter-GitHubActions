@@ -24,4 +24,4 @@ jobs:
       image: perldocker/perl-tester:5.26
     steps:
       - uses: actions/checkout@v4
-      - run: PERL5LIB=$PWD/lib:$PERL5LIB T2_FORMATTER=YAMLEnhancedTAP prove --formatter TAP::Formatter::GitHubActions --merge
+      - run: T2_FORMATTER=YAMLEnhancedTAP prove --formatter TAP::Formatter::GitHubActions --merge

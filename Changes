@@ -1,5 +1,8 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
+0.3.0_4  Fri 01 Dec 2023 23:41:57
+	- Moved Test2::Formatter::YAMLEnhancedTAP to it's own module.
+
 0.3.0_2  Fri 01 Dec 2023 14:49:58
 	- Cleaned-up output for the happy-path (no output on all ok).
 
