@@ -5,7 +5,7 @@ use warnings;
 use v5.16;
 use base 'TAP::Formatter::File';
 
-our $VERSION = '0.3.1';
+our $VERSION = '0.3.3';
 
 use TAP::Formatter::GitHubActions::Error;
 use TAP::Formatter::GitHubActions::ErrorGroup;

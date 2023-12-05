@@ -1,6 +1,6 @@
 Revision history for Perl extension TAP::Formatter::GitHubActions.
 
-0.3.1  Mon 04 Dec 2023 17:58:41
+0.3.3  Tue 05 Dec 2023 10:42:29
 	- New release 🎉 packed with tests & a nifty feature!
 
 	- Workflow summaries!

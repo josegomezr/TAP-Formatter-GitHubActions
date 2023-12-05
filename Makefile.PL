@@ -19,7 +19,6 @@ WriteMakefile(
   ABSTRACT_FROM => 'lib/TAP/Formatter/GitHubActions.pm',
   MIN_PERL_VERSION => '5.016000',
   META_MERGE => {
-    release_status => 'testing',
     dynamic_config => 0,
     "meta-spec" => {version => 2},
     resources => {
