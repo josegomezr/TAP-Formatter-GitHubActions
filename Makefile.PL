@@ -27,6 +27,9 @@ WriteMakefile(
         url => 'https://github.com/josegomezr/TAP-Formatter-GitHubActions.git',
         web => 'https://github.com/josegomezr/TAP-Formatter-GitHubActions',
       },
+      bugtracker => {
+        web => 'https://github.com/josegomezr/TAP-Formatter-GitHubActions/issues',
+      },
     },
   },
   AUTHOR => 'Jose D. Gomez R. <1josegomezr@gmail.com>',
